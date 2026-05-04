@@ -1,0 +1,1909 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SMART LPJ | Kanwil Imigrasi Maluku</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Libre+Baskerville:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --navy-900: #0a1f44;
+        --navy-800: #0f2d63;
+        --navy-700: #1a3a6b;
+        --navy-600: #1e4a8c;
+        --navy-100: #e8eef8;
+        --navy-50: #f2f5fb;
+        --gold-500: #c9a227;
+        --gold-400: #ddb83a;
+        --gold-300: #f0cc5c;
+        --gold-100: #fdf6e0;
+        --success: #198754;
+        --danger: #dc3545;
+        --pending: #e67e22;
+        --text-dark: #1a1f2e;
+        --text-muted: #64748b;
+        --border: #d1dce8;
+        --shadow-sm: 0 1px 4px rgba(10, 31, 68, 0.08);
+        --shadow-lg: 0 12px 40px rgba(10, 31, 68, 0.18);
+        --radius: 12px;
+        --radius-lg: 18px;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background: var(--navy-50);
+        color: var(--text-dark);
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      #app-loader {
+        position: fixed;
+        inset: 0;
+        background: var(--navy-900);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        transition: opacity 0.4s ease;
+      }
+      #app-loader .loader-logo {
+        width: 80px;
+        height: 80px;
+        background: var(--gold-500);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 24px;
+        animation: pulse 1.8s ease-in-out infinite;
+      }
+      #app-loader .loader-logo i {
+        font-size: 38px;
+        color: var(--navy-900);
+      }
+      #app-loader h1 {
+        font-family: "Libre Baskerville", serif;
+        font-size: 26px;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 6px;
+      }
+      #app-loader p {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 13px;
+      }
+      #app-loader .dots {
+        display: flex;
+        gap: 6px;
+        margin-top: 32px;
+      }
+      #app-loader .dots span {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--gold-500);
+        opacity: 0.3;
+        animation: dot-bounce 1.2s infinite;
+      }
+      #app-loader .dots span:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      #app-loader .dots span:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          box-shadow: 0 0 0 0 rgba(201, 162, 39, 0.4);
+          transform: scale(1);
+        }
+        50% {
+          box-shadow: 0 0 0 16px rgba(201, 162, 39, 0);
+          transform: scale(1.04);
+        }
+      }
+      @keyframes dot-bounce {
+        0%,
+        80%,
+        100% {
+          opacity: 0.3;
+          transform: translateY(0);
+        }
+        40% {
+          opacity: 1;
+          transform: translateY(-6px);
+        }
+      }
+
+      .view {
+        display: none;
+      }
+      .view.active {
+        display: block;
+      }
+
+      #view-login {
+        min-height: 100vh;
+        display: flex;
+        background: linear-gradient(
+          135deg,
+          var(--navy-900) 0%,
+          var(--navy-700) 60%,
+          #1e5799 100%
+        );
+        position: relative;
+        overflow: hidden;
+      }
+      #view-login::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image:
+          radial-gradient(
+            circle at 20% 80%,
+            rgba(201, 162, 39, 0.12) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 80% 20%,
+            rgba(30, 74, 140, 0.4) 0%,
+            transparent 50%
+          ),
+          url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.025'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      }
+      #view-login .login-left {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 60px 40px;
+        position: relative;
+        z-index: 1;
+      }
+      #view-login .login-left .brand-mark {
+        width: 90px;
+        height: 90px;
+        background: linear-gradient(135deg, var(--gold-500), var(--gold-300));
+        border-radius: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 12px 40px rgba(201, 162, 39, 0.35);
+        margin-bottom: 28px;
+      }
+      #view-login .login-left .brand-mark i {
+        font-size: 44px;
+        color: var(--navy-900);
+      }
+      #view-login .login-left h1 {
+        font-family: "Libre Baskerville", serif;
+        font-size: 38px;
+        font-weight: 700;
+        color: #fff;
+        letter-spacing: -0.5px;
+        text-align: center;
+      }
+      #view-login .login-left h1 span {
+        color: var(--gold-400);
+      }
+      #view-login .login-left .sub {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 14px;
+        text-align: center;
+        margin-top: 10px;
+        max-width: 300px;
+        line-height: 1.6;
+      }
+      #view-login .login-left .badge-org {
+        margin-top: 40px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 100px;
+        padding: 8px 20px;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 12px;
+        font-weight: 500;
+      }
+      #view-login .login-right {
+        width: 460px;
+        min-height: 100vh;
+        background: #fff;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 60px 50px;
+        box-shadow: -20px 0 60px rgba(0, 0, 0, 0.2);
+      }
+      #view-login .login-right h2 {
+        font-size: 24px;
+        font-weight: 800;
+        color: var(--navy-900);
+        margin-bottom: 6px;
+      }
+      #view-login .login-right p.hint {
+        color: var(--text-muted);
+        font-size: 14px;
+        margin-bottom: 36px;
+      }
+
+      @media (max-width: 768px) {
+        #view-login {
+          flex-direction: column;
+        }
+        #view-login .login-left {
+          padding: 40px 24px 30px;
+        }
+        #view-login .login-left h1 {
+          font-size: 28px;
+        }
+        #view-login .login-right {
+          width: 100%;
+          min-height: auto;
+          padding: 36px 24px 50px;
+        }
+      }
+
+      .form-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--navy-800);
+        margin-bottom: 6px;
+        letter-spacing: 0.3px;
+      }
+      .form-control,
+      .form-select {
+        border: 1.5px solid var(--border);
+        border-radius: 10px;
+        padding: 11px 14px;
+        font-size: 14px;
+        color: var(--text-dark);
+        transition:
+          border-color 0.15s,
+          box-shadow 0.15s;
+      }
+      .form-control:focus,
+      .form-select:focus {
+        border-color: var(--navy-700);
+        box-shadow: 0 0 0 3px rgba(26, 58, 107, 0.1);
+        outline: none;
+      }
+
+      .btn-navy {
+        background: linear-gradient(135deg, var(--navy-700), var(--navy-900));
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 24px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 4px 14px rgba(26, 58, 107, 0.3);
+      }
+      .btn-navy:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(26, 58, 107, 0.4);
+      }
+      .btn-navy:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+      .btn-gold {
+        background: linear-gradient(135deg, var(--gold-500), var(--gold-400));
+        color: var(--navy-900);
+        border: none;
+        border-radius: 10px;
+        padding: 12px 24px;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 4px 14px rgba(201, 162, 39, 0.3);
+      }
+      .btn-gold:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(201, 162, 39, 0.4);
+      }
+      .btn-outline-navy {
+        background: transparent;
+        border: 1.5px solid var(--navy-700);
+        color: var(--navy-700);
+        border-radius: 10px;
+        padding: 11px 22px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .btn-outline-navy:hover {
+        background: var(--navy-700);
+        color: #fff;
+      }
+
+      #app-shell {
+        display: none;
+        min-height: 100vh;
+        flex-direction: column;
+      }
+      #app-shell.active {
+        display: flex;
+      }
+
+      .topbar {
+        background: linear-gradient(90deg, var(--navy-900), var(--navy-700));
+        padding: 0 28px;
+        height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 2px 12px rgba(10, 31, 68, 0.25);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .topbar .brand {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .topbar .brand .icon-wrap {
+        width: 38px;
+        height: 38px;
+        background: var(--gold-500);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .topbar .brand .icon-wrap i {
+        color: var(--navy-900);
+        font-size: 20px;
+      }
+      .topbar .brand span {
+        font-family: "Libre Baskerville", serif;
+        font-size: 17px;
+        font-weight: 700;
+        color: #fff;
+      }
+      .topbar .brand span em {
+        font-style: normal;
+        color: var(--gold-400);
+      }
+      .topbar .user-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .topbar .user-pill {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 100px;
+        padding: 6px 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .topbar .user-pill .avatar {
+        width: 28px;
+        height: 28px;
+        background: var(--gold-500);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--navy-900);
+      }
+      .topbar .user-pill .name {
+        color: #fff;
+        font-size: 13px;
+        font-weight: 600;
+      }
+      .topbar .user-pill .role-badge {
+        background: rgba(201, 162, 39, 0.25);
+        color: var(--gold-300);
+        font-size: 10px;
+        font-weight: 700;
+        border-radius: 4px;
+        padding: 2px 6px;
+        text-transform: uppercase;
+      }
+      .btn-logout {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: rgba(255, 255, 255, 0.7);
+        border-radius: 8px;
+        padding: 6px 14px;
+        font-size: 13px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .btn-logout:hover {
+        background: rgba(255, 255, 255, 0.15);
+        color: #fff;
+      }
+
+      .app-body {
+        display: flex;
+        flex: 1;
+      }
+      .sidebar {
+        width: 240px;
+        flex-shrink: 0;
+        background: #fff;
+        border-right: 1px solid var(--border);
+        padding: 24px 14px;
+      }
+      .sidebar .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 14px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text-muted);
+        margin-bottom: 4px;
+        transition: all 0.15s;
+      }
+      .sidebar .nav-item:hover {
+        background: var(--navy-50);
+        color: var(--navy-700);
+      }
+      .sidebar .nav-item.active {
+        background: var(--navy-100);
+        color: var(--navy-700);
+        font-weight: 700;
+      }
+      .sidebar .nav-item i {
+        font-size: 17px;
+      }
+      .sidebar .nav-section {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        padding: 14px 14px 8px;
+      }
+      @media (max-width: 900px) {
+        .sidebar {
+          display: none;
+        }
+      }
+
+      .main-content {
+        flex: 1;
+        padding: 32px 28px;
+        overflow-y: auto;
+      }
+      .page-header {
+        margin-bottom: 28px;
+      }
+      .page-header h2 {
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--navy-900);
+        margin-bottom: 4px;
+      }
+      .page-header p {
+        color: var(--text-muted);
+        font-size: 14px;
+      }
+      .page-header .breadcrumb-trail {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--text-muted);
+        margin-bottom: 8px;
+      }
+      .page-header .breadcrumb-trail i {
+        font-size: 10px;
+      }
+
+      .stat-cards {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 28px;
+      }
+      @media (max-width: 1100px) {
+        .stat-cards {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (max-width: 600px) {
+        .stat-cards {
+          grid-template-columns: 1fr;
+        }
+      }
+      .stat-card {
+        background: #fff;
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        padding: 20px 22px;
+        box-shadow: var(--shadow-sm);
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .stat-card .icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        flex-shrink: 0;
+      }
+      .stat-card .icon.navy {
+        background: var(--navy-100);
+        color: var(--navy-700);
+      }
+      .stat-card .icon.gold {
+        background: var(--gold-100);
+        color: var(--gold-500);
+      }
+      .stat-card .icon.green {
+        background: #d1fae5;
+        color: var(--success);
+      }
+      .stat-card .icon.red {
+        background: #fee2e2;
+        color: var(--danger);
+      }
+      .stat-card .val {
+        font-size: 26px;
+        font-weight: 800;
+        color: var(--navy-900);
+        line-height: 1;
+      }
+      .stat-card .label {
+        font-size: 12px;
+        color: var(--text-muted);
+        font-weight: 500;
+        margin-top: 3px;
+      }
+
+      .card {
+        background: #fff;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+      }
+      .card-header-bar {
+        padding: 18px 22px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .card-header-bar h3 {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--navy-900);
+      }
+      .card-header-bar p {
+        font-size: 12px;
+        color: var(--text-muted);
+        margin-top: 2px;
+      }
+
+      .table-wrapper {
+        overflow-x: auto;
+      }
+      table.lpj-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13.5px;
+      }
+      table.lpj-table thead th {
+        background: var(--navy-50);
+        padding: 12px 16px;
+        font-weight: 700;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        color: var(--navy-700);
+        border-bottom: 1px solid var(--border);
+        white-space: nowrap;
+      }
+      table.lpj-table tbody tr {
+        border-bottom: 1px solid #f1f5f9;
+        transition: background 0.12s;
+      }
+      table.lpj-table tbody tr:hover {
+        background: var(--navy-50);
+      }
+      table.lpj-table tbody td {
+        padding: 13px 16px;
+        color: var(--text-dark);
+        vertical-align: middle;
+      }
+
+      .badge-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 10px;
+        border-radius: 100px;
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+      .badge-status.pending {
+        background: #fef3c7;
+        color: #92400e;
+      }
+      .badge-status.approved {
+        background: #d1fae5;
+        color: #065f46;
+      }
+      .badge-status.rejected {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+      .badge-status::before {
+        content: "";
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: currentColor;
+      }
+
+      .btn-approve {
+        background: #d1fae5;
+        color: #065f46;
+        border: none;
+        border-radius: 7px;
+        padding: 5px 12px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .btn-approve:hover {
+        background: #a7f3d0;
+      }
+      .btn-reject {
+        background: #fee2e2;
+        color: #991b1b;
+        border: none;
+        border-radius: 7px;
+        padding: 5px 12px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .btn-reject:hover {
+        background: #fecaca;
+      }
+
+      .upload-section {
+        margin-bottom: 20px;
+      }
+      .upload-section h5 {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--navy-800);
+        margin-bottom: 14px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid var(--navy-100);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .doc-upload-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 14px;
+        border-radius: 10px;
+        border: 1.5px solid var(--border);
+        margin-bottom: 8px;
+        transition: border-color 0.15s;
+      }
+      .doc-upload-row:hover {
+        border-color: var(--navy-600);
+      }
+      .doc-upload-row.has-file {
+        border-color: var(--success);
+        background: #f0fdf4;
+      }
+      .doc-upload-row .doc-num {
+        width: 26px;
+        height: 26px;
+        border-radius: 8px;
+        background: var(--navy-100);
+        color: var(--navy-700);
+        font-size: 12px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .doc-upload-row .doc-label {
+        flex: 1;
+        font-size: 13px;
+        font-weight: 500;
+      }
+      .doc-upload-row .doc-required {
+        font-size: 10px;
+        color: #dc3545;
+        font-weight: 600;
+        margin-left: 4px;
+      }
+      .doc-upload-row input[type="file"] {
+        flex: 0 0 180px;
+        font-size: 12px;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+      }
+      .doc-upload-row .file-status {
+        font-size: 11px;
+        color: var(--success);
+        font-weight: 600;
+        display: none;
+        white-space: nowrap;
+      }
+      .doc-upload-row.has-file .file-status {
+        display: block;
+      }
+
+      .form-card {
+        background: #fff;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow-sm);
+      }
+      .form-card .form-card-header {
+        background: linear-gradient(135deg, var(--navy-900), var(--navy-700));
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        padding: 24px 28px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .form-card .form-card-header .header-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background: rgba(201, 162, 39, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .form-card .form-card-header .header-icon i {
+        font-size: 22px;
+        color: var(--gold-400);
+      }
+      .form-card .form-card-header h2 {
+        font-size: 18px;
+        font-weight: 800;
+        color: #fff;
+        margin-bottom: 3px;
+      }
+      .form-card .form-card-header p {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.6);
+      }
+      .form-card .form-card-body {
+        padding: 28px;
+      }
+      .form-section-title {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--navy-700);
+        padding: 0 0 10px;
+        margin-bottom: 16px;
+        border-bottom: 2px solid var(--navy-100);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(10, 31, 68, 0.55);
+        z-index: 500;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+      .modal-overlay.open {
+        display: flex;
+      }
+      .modal-box {
+        background: #fff;
+        border-radius: var(--radius-lg);
+        padding: 32px;
+        width: 100%;
+        max-width: 480px;
+        box-shadow: var(--shadow-lg);
+        animation: slide-up 0.25s ease;
+      }
+      @keyframes slide-up {
+        from {
+          transform: translateY(20px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+      .modal-box h3 {
+        font-size: 18px;
+        font-weight: 800;
+        color: var(--navy-900);
+        margin-bottom: 8px;
+      }
+      .modal-box p {
+        font-size: 14px;
+        color: var(--text-muted);
+        margin-bottom: 20px;
+      }
+
+      .detail-panel {
+        background: #fff;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+      }
+      .detail-panel .detail-header {
+        background: var(--navy-900);
+        padding: 20px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .detail-panel .detail-header h3 {
+        color: #fff;
+        font-size: 16px;
+        font-weight: 700;
+      }
+      .detail-panel .detail-body {
+        padding: 24px;
+      }
+      .detail-row {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+      .detail-row .dk {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-muted);
+        min-width: 140px;
+      }
+      .detail-row .dv {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text-dark);
+      }
+      .file-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--navy-50);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 5px 12px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--navy-700);
+        text-decoration: none;
+        margin: 3px 3px 3px 0;
+        transition: all 0.15s;
+      }
+      .file-link:hover {
+        background: var(--navy-100);
+        color: var(--navy-900);
+      }
+
+      .toast-container {
+        position: fixed;
+        bottom: 28px;
+        right: 28px;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .toast-msg {
+        background: var(--navy-900);
+        color: #fff;
+        border-radius: 12px;
+        padding: 14px 20px;
+        font-size: 13.5px;
+        font-weight: 500;
+        box-shadow: var(--shadow-lg);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        animation:
+          toast-in 0.25s ease,
+          toast-out 0.25s ease 2.75s forwards;
+        min-width: 260px;
+      }
+      .toast-msg.success {
+        background: #065f46;
+      }
+      .toast-msg.error {
+        background: #991b1b;
+      }
+      .toast-msg i {
+        font-size: 18px;
+      }
+      @keyframes toast-in {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      @keyframes toast-out {
+        from {
+          opacity: 1;
+        }
+        to {
+          opacity: 0;
+        }
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--text-muted);
+      }
+      .empty-state i {
+        font-size: 48px;
+        opacity: 0.25;
+        margin-bottom: 12px;
+        display: block;
+      }
+      .empty-state p {
+        font-size: 14px;
+      }
+
+      .filter-bar {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+      }
+      .filter-btn {
+        background: #fff;
+        border: 1.5px solid var(--border);
+        border-radius: 100px;
+        padding: 6px 16px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        color: var(--text-muted);
+        transition: all 0.15s;
+      }
+      .filter-btn.active {
+        background: var(--navy-700);
+        border-color: var(--navy-700);
+        color: #fff;
+      }
+      .filter-btn:hover:not(.active) {
+        border-color: var(--navy-600);
+        color: var(--navy-700);
+      }
+
+      .search-box {
+        position: relative;
+        flex: 1;
+        min-width: 200px;
+      }
+      .search-box i {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-muted);
+      }
+      .search-box input {
+        width: 100%;
+        padding-left: 36px;
+        border: 1.5px solid var(--border);
+        border-radius: 10px;
+        font-size: 13px;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        padding-right: 12px;
+      }
+      .search-box input:focus {
+        border-color: var(--navy-700);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(26, 58, 107, 0.1);
+      }
+
+      .progress-bar-custom {
+        height: 4px;
+        border-radius: 2px;
+        background: rgba(255, 255, 255, 0.15);
+        overflow: hidden;
+        margin-top: 12px;
+      }
+      .progress-bar-custom .fill {
+        height: 100%;
+        border-radius: 2px;
+        background: var(--gold-400);
+        width: 0%;
+        transition: width 0.4s ease;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app-loader">
+      <div class="loader-logo"><i class="bi bi-shield-check"></i></div>
+      <h1>SMART <span style="color: var(--gold-400)">LPJ</span></h1>
+      <p>Kanwil Direktorat Jenderal Imigrasi Maluku</p>
+      <div class="dots"><span></span><span></span><span></span></div>
+    </div>
+
+    <div id="view-login" class="view">
+      <div class="login-left">
+        <div class="brand-mark"><i class="bi bi-shield-check"></i></div>
+        <h1>SMART <span>LPJ</span></h1>
+        <p class="sub">
+          Sistem Manajemen dan Verifikasi Laporan Pertanggungjawaban Perjalanan
+          Dinas Digital
+        </p>
+        <div class="badge-org">
+          <i class="bi bi-building me-1"></i>Kanwil Ditjen Imigrasi Maluku
+          &nbsp;·&nbsp; 2026
+        </div>
+      </div>
+
+      <div class="login-right">
+        <h2>Selamat Datang 👋</h2>
+        <p class="hint">Masukkan kredensial Anda untuk melanjutkan</p>
+        <div
+          id="login-alert"
+          class="alert alert-danger py-2 px-3"
+          style="font-size: 13px; display: none; border-radius: 10px"
+        ></div>
+
+        <div class="mb-3">
+          <label class="form-label">Email Instansi</label>
+          <div class="position-relative">
+            <i
+              class="bi bi-envelope position-absolute"
+              style="
+                left: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--text-muted);
+              "
+            ></i>
+            <input
+              id="inp-email"
+              type="email"
+              class="form-control"
+              placeholder="nama@imigrasi.go.id"
+              style="padding-left: 36px"
+              autocomplete="email"
+            />
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label">PIN / Password</label>
+          <div class="position-relative">
+            <i
+              class="bi bi-lock position-absolute"
+              style="
+                left: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--text-muted);
+              "
+            ></i>
+            <input
+              id="inp-pass"
+              type="password"
+              class="form-control"
+              placeholder="••••••••"
+              style="padding-left: 36px; padding-right: 40px"
+              autocomplete="current-password"
+            />
+            <i
+              class="bi bi-eye-slash position-absolute"
+              id="toggle-pass"
+              style="
+                right: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--text-muted);
+                cursor: pointer;
+              "
+              onclick="togglePassword()"
+            ></i>
+          </div>
+        </div>
+
+        <button id="btn-login" class="btn-navy w-100" onclick="doLogin()">
+          <i class="bi bi-box-arrow-in-right me-2"></i>Masuk ke Sistem
+        </button>
+
+        <p
+          style="
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 24px;
+          "
+        >
+          Hubungi admin sistem jika Anda belum memiliki akun.<br />
+          <strong>Kanwil Ditjen Imigrasi Maluku - 2026</strong>
+        </p>
+      </div>
+    </div>
+
+    <div id="app-shell">
+      <div class="topbar">
+        <div class="brand">
+          <div class="icon-wrap"><i class="bi bi-shield-check"></i></div>
+          <span>SMART <em>LPJ</em></span>
+        </div>
+        <div class="user-info">
+          <div class="user-pill">
+            <div class="avatar" id="user-avatar">?</div>
+            <span class="name" id="user-name-top">-</span>
+            <span class="role-badge" id="user-role-badge">-</span>
+          </div>
+          <button class="btn-logout" onclick="doLogout()">
+            <i class="bi bi-box-arrow-right me-1"></i>Keluar
+          </button>
+        </div>
+      </div>
+
+      <div class="app-body">
+        <div class="sidebar" id="sidebar">
+          <div class="nav-section">Menu Utama</div>
+        </div>
+        <div class="main-content" id="main-content"></div>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-reject">
+      <div class="modal-box">
+        <h3>
+          <i class="bi bi-x-circle-fill me-2" style="color: var(--danger)"></i
+          >Tolak Pengajuan
+        </h3>
+        <p>
+          Masukkan alasan penolakan yang jelas agar Staf PPK dapat melakukan
+          perbaikan.
+        </p>
+        <input type="hidden" id="reject-row-index" />
+        <div class="mb-3">
+          <label class="form-label"
+            >Alasan Penolakan <span style="color: #dc3545">*</span></label
+          >
+          <textarea
+            id="reject-reason"
+            class="form-control"
+            rows="4"
+            placeholder="Contoh: Kuitansi tidak dilampirkan, SPD belum ditandatangani..."
+          ></textarea>
+        </div>
+        <div class="d-flex gap-3">
+          <button
+            class="btn-outline-navy flex-fill"
+            onclick="closeRejectModal()"
+          >
+            Batal
+          </button>
+          <button
+            class="btn-navy flex-fill"
+            onclick="confirmReject()"
+            style="background: linear-gradient(135deg, #b91c1c, #991b1b)"
+          >
+            <i class="bi bi-x-lg me-2"></i>Konfirmasi Tolak
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-detail">
+      <div
+        class="modal-box"
+        style="max-width: 640px; padding: 0; overflow: hidden"
+      >
+        <div class="detail-header">
+          <h3>
+            <i class="bi bi-file-earmark-text me-2"></i>Detail Pengajuan LPJ
+          </h3>
+          <button
+            onclick="
+              document.getElementById('modal-detail').classList.remove('open')
+            "
+            style="
+              background: rgba(255, 255, 255, 0.1);
+              border: none;
+              color: #fff;
+              border-radius: 8px;
+              padding: 4px 12px;
+              cursor: pointer;
+            "
+          >
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+        <div
+          class="detail-body"
+          id="detail-body"
+          style="max-height: 70vh; overflow-y: auto"
+        ></div>
+      </div>
+    </div>
+
+    <div class="toast-container" id="toast-container"></div>
+
+    <script>
+      // ==========================================
+      // BACKEND CONFIGURATION
+      // ==========================================
+      // REPLACE THIS URL WITH YOUR GOOGLE APPS SCRIPT WEB APP URL
+      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwrOwgllywgd_3PuJgoq27G2Yjmq3_4w8SP3ppgZZBuL7quOb_sNkn5c4M0p49MgLjnQA/exec";
+
+      const App = {
+        currentUser: null,
+        currentPage: "",
+        allLPJ: [],
+        filterStatus: "all",
+        searchQuery: "",
+        uploadedFiles: {},
+        submitting: false,
+        DOCS_RIIL: [
+          { key: "nota_dinas", label: "Nota Dinas", required: true },
+          { key: "daftar_nom", label: "Daftar Nominatif", required: true },
+          { key: "surat_perintah", label: "Surat Perintah", required: true },
+          { key: "pok_terakhir", label: "POK Terakhir", required: false },
+          { key: "spd", label: "SPD (Surat Perjalanan Dinas)", required: true },
+          { key: "rampung_tiba", label: "Rampung Tiba", required: true },
+          { key: "kuitansi", label: "Kuitansi", required: true },
+          {
+            key: "rincian_biaya",
+            label: "Rincian Biaya Perjalanan Dinas",
+            required: true,
+          },
+          {
+            key: "daftar_pengeluaran",
+            label: "Daftar Pengeluaran Riil",
+            required: false,
+          },
+          {
+            key: "tiket_boarding",
+            label: "Tiket & Boarding Pass",
+            required: false,
+          },
+          { key: "spp", label: "SPP", required: true },
+        ],
+        DOCS_LOKAL: [
+          { key: "nota_dinas", label: "Nota Dinas", required: true },
+          { key: "daftar_nom", label: "Daftar Nominatif", required: true },
+          { key: "surat_perintah", label: "Surat Perintah", required: true },
+          {
+            key: "tanda_terima",
+            label: "Tanda Terima Pembayaran",
+            required: true,
+          },
+          { key: "pok_terakhir", label: "POK Terakhir", required: false },
+          { key: "spp", label: "SPP", required: true },
+          {
+            key: "bukti_transport",
+            label: "Bukti Transport Lokal",
+            required: true,
+          },
+        ],
+      };
+
+      // FETCH WRAPPER
+      async function callBackend(action, dataPayload) {
+        try {
+          const response = await fetch(SCRIPT_URL, {
+            method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify({ action: action, data: dataPayload }),
+          });
+          return await response.json();
+        } catch (error) {
+          throw new Error("Gagal menghubungi server. Periksa koneksi Anda.");
+        }
+      }
+
+      window.onload = function () {
+        setTimeout(function () {
+          document.getElementById("app-loader").style.opacity = "0";
+          setTimeout(function () {
+            document.getElementById("app-loader").style.display = "none";
+            showView("login");
+          }, 400);
+        }, 1600);
+
+        document
+          .getElementById("inp-pass")
+          .addEventListener("keydown", function (e) {
+            if (e.key === "Enter") doLogin();
+          });
+      };
+
+      function togglePassword() {
+        const passInput = document.getElementById("inp-pass");
+        const toggleIcon = document.getElementById("toggle-pass");
+        if (passInput.type === "password") {
+          passInput.type = "text";
+          toggleIcon.classList.replace("bi-eye-slash", "bi-eye");
+        } else {
+          passInput.type = "password";
+          toggleIcon.classList.replace("bi-eye", "bi-eye-slash");
+        }
+      }
+
+      function showView(v) {
+        document
+          .querySelectorAll(".view")
+          .forEach((el) => el.classList.remove("active"));
+        document.getElementById("app-shell").classList.remove("active");
+        if (v === "login") {
+          document.getElementById("view-login").classList.add("active");
+          document.getElementById("view-login").style.display = "flex";
+        } else {
+          document.getElementById("view-login").style.display = "none";
+          document.getElementById("app-shell").classList.add("active");
+        }
+      }
+
+      async function doLogin() {
+        const email = document.getElementById("inp-email").value.trim();
+        const pass = document.getElementById("inp-pass").value;
+        const btn = document.getElementById("btn-login");
+        const alert = document.getElementById("login-alert");
+
+        if (!email || !pass) {
+          showAlert("Email dan PIN wajib diisi.");
+          return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML =
+          '<span class="spinner-border spinner-border-sm me-2"></span>Memverifikasi...';
+        alert.style.display = "none";
+
+        try {
+          const res = await callBackend("login", {
+            email: email,
+            password: pass,
+          });
+          btn.disabled = false;
+          btn.innerHTML =
+            '<i class="bi bi-box-arrow-in-right me-2"></i>Masuk ke Sistem';
+
+          if (res.success) {
+            App.currentUser = res.user;
+            initShell();
+            showView("app");
+            toast("Selamat datang, " + res.user.name, "success");
+          } else {
+            showAlert(res.message || "Login gagal.");
+          }
+        } catch (err) {
+          btn.disabled = false;
+          btn.innerHTML =
+            '<i class="bi bi-box-arrow-in-right me-2"></i>Masuk ke Sistem';
+          showAlert(err.message);
+        }
+      }
+
+      function showAlert(msg) {
+        const el = document.getElementById("login-alert");
+        el.textContent = "⚠ " + msg;
+        el.style.display = "block";
+      }
+
+      function doLogout() {
+        App.currentUser = null;
+        document.getElementById("inp-email").value = "";
+        document.getElementById("inp-pass").value = "";
+        showView("login");
+      }
+
+      function initShell() {
+        const u = App.currentUser;
+        const initial = u.name.charAt(0).toUpperCase();
+        document.getElementById("user-avatar").textContent = initial;
+        document.getElementById("user-name-top").textContent = u.name;
+        document.getElementById("user-role-badge").textContent =
+          u.role === "supervisor" ? "PPK" : "Staf PPK";
+
+        buildSidebar();
+        if (u.role === "supervisor") navigateTo("dashboard");
+        else navigateTo("submit");
+      }
+
+      function buildSidebar() {
+        const sb = document.getElementById("sidebar");
+        const role = App.currentUser.role;
+        let items = "";
+        if (role === "supervisor") {
+          items = `<div class="nav-item active" id="nav-dashboard" onclick="navigateTo('dashboard')"><i class="bi bi-speedometer2"></i> Dashboard</div><div class="nav-item" id="nav-list" onclick="navigateTo('list')"><i class="bi bi-list-ul"></i> Semua Pengajuan</div>`;
+        } else {
+          items = `<div class="nav-item active" id="nav-submit" onclick="navigateTo('submit')"><i class="bi bi-cloud-upload"></i> Upload LPJ</div><div class="nav-item" id="nav-my-lpj" onclick="navigateTo('my_lpj')"><i class="bi bi-folder2-open"></i> LPJ Saya</div>`;
+        }
+        sb.innerHTML = `<div class="nav-section">Menu</div>${items}<div class="nav-section" style="margin-top:auto;padding-top:20px;">Sistem</div><div class="nav-item" id="nav-info" onclick="navigateTo('info')"><i class="bi bi-info-circle"></i> Panduan</div>`;
+      }
+
+      function setActiveNav(page) {
+        document
+          .querySelectorAll(".nav-item")
+          .forEach((el) => el.classList.remove("active"));
+        const el = document.getElementById("nav-" + page);
+        if (el) el.classList.add("active");
+      }
+
+      function navigateTo(page) {
+        App.currentPage = page;
+        setActiveNav(page);
+        const mc = document.getElementById("main-content");
+        switch (page) {
+          case "dashboard":
+            renderDashboard(mc);
+            break;
+          case "list":
+            renderList(mc, "supervisor");
+            break;
+          case "submit":
+            renderSubmitForm(mc);
+            break;
+          case "my_lpj":
+            renderList(mc, "submitter");
+            break;
+          case "info":
+            renderInfo(mc);
+            break;
+        }
+      }
+
+      function renderDashboard(mc) {
+        mc.innerHTML = `<div class="page-header"><div class="breadcrumb-trail"><i class="bi bi-house"></i> <i class="bi bi-chevron-right"></i> Dashboard</div><h2>Dashboard Verifikasi</h2><p>Pantau status pengajuan LPJ secara real-time</p></div><div class="stat-cards" id="stat-cards"><div class="stat-card"><div class="icon navy"><i class="bi bi-file-earmark-text"></i></div><div><div class="val" id="stat-total">-</div><div class="label">Total Pengajuan</div></div></div><div class="stat-card"><div class="icon gold"><i class="bi bi-clock-history"></i></div><div><div class="val" id="stat-pending">-</div><div class="label">Menunggu Verifikasi</div></div></div><div class="stat-card"><div class="icon green"><i class="bi bi-check-circle"></i></div><div><div class="val" id="stat-approved">-</div><div class="label">Disetujui</div></div></div><div class="stat-card"><div class="icon red"><i class="bi bi-x-circle"></i></div><div><div class="val" id="stat-rejected">-</div><div class="label">Ditolak</div></div></div></div><div class="card"><div class="card-header-bar"><div><h3>Pengajuan Menunggu Verifikasi</h3><p>LPJ dengan status Pending</p></div><button class="btn-gold" onclick="navigateTo('list')" style="padding:8px 18px;font-size:13px;">Lihat Semua <i class="bi bi-arrow-right ms-1"></i></button></div><div class="table-wrapper"><div id="pending-table-container" style="padding:16px;"><div class="empty-state"><i class="bi bi-hourglass-split"></i><p>Memuat data...</p></div></div></div></div>`;
+        loadStats();
+        loadLPJForDashboard();
+      }
+
+      async function loadStats() {
+        try {
+          const s = await callBackend("getDashboardStats", {});
+          document.getElementById("stat-total").textContent = s.total;
+          document.getElementById("stat-pending").textContent = s.pending;
+          document.getElementById("stat-approved").textContent = s.approved;
+          document.getElementById("stat-rejected").textContent = s.rejected;
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
+      async function loadLPJForDashboard() {
+        try {
+          const data = await callBackend("getLPJList", {
+            role: "supervisor",
+            email: App.currentUser.email,
+          });
+          App.allLPJ = data;
+          const pending = data
+            .filter((r) => r.Status === "Pending")
+            .slice(0, 10);
+          const con = document.getElementById("pending-table-container");
+          if (!con) return;
+          if (!pending.length) {
+            con.innerHTML =
+              '<div class="empty-state"><i class="bi bi-check2-all"></i><p>Tidak ada pengajuan yang menunggu verifikasi.</p></div>';
+            return;
+          }
+          con.innerHTML = buildTable(pending, true);
+        } catch (err) {
+          toast("Gagal memuat data: " + err.message, "error");
+        }
+      }
+
+      function renderList(mc, role) {
+        const isSup = role === "supervisor";
+        mc.innerHTML = `<div class="page-header"><div class="breadcrumb-trail"><i class="bi bi-house"></i> <i class="bi bi-chevron-right"></i> ${isSup ? "Semua Pengajuan" : "LPJ Saya"}</div><h2>${isSup ? "Daftar Pengajuan LPJ" : "LPJ Saya"}</h2><p>${isSup ? "Verifikasi dan kelola semua pengajuan" : "Pantau status pengajuan LPJ Anda"}</p></div><div class="filter-bar"><div class="search-box"><i class="bi bi-search"></i><input type="text" placeholder="Cari kegiatan, bidang, pengaju..." id="search-input" oninput="filterList()"/></div><button class="filter-btn active" data-f="all" onclick="setFilter(this,'all')">Semua</button><button class="filter-btn" data-f="Pending" onclick="setFilter(this,'Pending')">⏳ Pending</button><button class="filter-btn" data-f="Approved" onclick="setFilter(this,'Approved')">✅ Disetujui</button><button class="filter-btn" data-f="Rejected" onclick="setFilter(this,'Rejected')">❌ Ditolak</button></div><div class="card"><div class="card-header-bar"><div><h3>Daftar Pengajuan</h3><p id="list-count">Memuat...</p></div><button class="btn-outline-navy" style="padding:7px 16px;font-size:13px;" onclick="refreshList()"><i class="bi bi-arrow-clockwise me-1"></i>Refresh</button></div><div class="table-wrapper"><div id="list-table-container" style="padding:16px;"><div class="empty-state"><i class="bi bi-arrow-repeat"></i><p>Memuat data...</p></div></div></div></div>`;
+        App.filterStatus = "all";
+        App.searchQuery = "";
+        refreshList(role);
+      }
+
+      async function refreshList(role) {
+        const r =
+          role ||
+          (App.currentUser.role === "supervisor" ? "supervisor" : "submitter");
+        try {
+          const data = await callBackend("getLPJList", {
+            role: r,
+            email: App.currentUser.email,
+          });
+          App.allLPJ = data;
+          filterList();
+        } catch (err) {
+          toast("Gagal memuat: " + err.message, "error");
+        }
+      }
+
+      function setFilter(btn, status) {
+        App.filterStatus = status;
+        document
+          .querySelectorAll(".filter-btn")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        filterList();
+      }
+
+      function filterList() {
+        const q = (document.getElementById("search-input") || {}).value || "";
+        App.searchQuery = q.toLowerCase();
+        let data = App.allLPJ;
+        if (App.filterStatus !== "all")
+          data = data.filter((r) => r.Status === App.filterStatus);
+        if (App.searchQuery) {
+          data = data.filter(
+            (r) =>
+              (r["Nama Kegiatan"] || "")
+                .toLowerCase()
+                .includes(App.searchQuery) ||
+              (r["Bidang"] || "").toLowerCase().includes(App.searchQuery) ||
+              (r["Submitter Name"] || "")
+                .toLowerCase()
+                .includes(App.searchQuery) ||
+              (r["ID"] || "").toLowerCase().includes(App.searchQuery),
+          );
+        }
+        const isSup = App.currentUser.role === "supervisor";
+        const con = document.getElementById("list-table-container");
+        const cnt = document.getElementById("list-count");
+        if (!con) return;
+        if (cnt) cnt.textContent = data.length + " pengajuan ditemukan";
+        if (!data.length) {
+          con.innerHTML =
+            '<div class="empty-state"><i class="bi bi-search"></i><p>Tidak ada data yang sesuai.</p></div>';
+          return;
+        }
+        con.innerHTML = buildTable(data, isSup);
+      }
+
+      function buildTable(rows, showActions) {
+        let tbody = "";
+        rows.forEach(function (r) {
+          const statusClass = (r.Status || "Pending").toLowerCase();
+          const statusLabel =
+            { Pending: "Menunggu", Approved: "Disetujui", Rejected: "Ditolak" }[
+              r.Status
+            ] || r.Status;
+          let actions = "";
+          if (showActions && r.Status === "Pending") {
+            actions = `<button class="btn-approve" onclick="doApprove(${r._rowIndex})"><i class="bi bi-check-lg me-1"></i>Setuju</button><button class="btn-reject ms-1" onclick="openReject(${r._rowIndex})"><i class="bi bi-x-lg me-1"></i>Tolak</button>`;
+          } else if (showActions) {
+            actions = `<span style="font-size:12px;color:var(--text-muted);">-</span>`;
+          }
+          tbody += `<tr><td style="font-weight:700;color:var(--navy-700);font-size:12px;">${r.ID || ""}</td><td><div style="font-weight:600;">${r["Nama Kegiatan"] || "-"}</div><div style="font-size:12px;color:var(--text-muted);">${r["Bidang"] || ""}</div></td><td style="font-size:12px;"><div style="font-weight:600;">${r["Submitter Name"] || ""}</div><div style="color:var(--text-muted);">${r["Submitter Email"] || ""}</div></td><td style="font-size:12px;">${r.Timestamp || ""}</td><td><span class="badge-status ${statusClass}">${statusLabel}</span></td><td><button style="background:var(--navy-50);border:1px solid var(--border);border-radius:7px;padding:4px 10px;font-size:12px;cursor:pointer;color:var(--navy-700);" onclick="showDetail(${r._rowIndex})"><i class="bi bi-eye me-1"></i>Detail</button> ${actions}</td></tr>`;
+        });
+        return `<table class="lpj-table"><thead><tr><th>ID</th><th>Kegiatan</th><th>Pengaju</th><th>Tanggal</th><th>Status</th><th>Aksi</th></tr></thead><tbody>${tbody}</tbody></table>`;
+      }
+
+      function showDetail(rowIndex) {
+        const r = App.allLPJ.find((x) => x._rowIndex === rowIndex);
+        if (!r) return;
+        const files =
+          (r._files || [])
+            .map(
+              (f) =>
+                `<a class="file-link" href="${f.url}" target="_blank"><i class="bi bi-file-earmark-arrow-down"></i>${f.docType || f.name}</a>`,
+            )
+            .join("") ||
+          '<span style="font-size:13px;color:var(--text-muted);">Tidak ada file</span>';
+        const statusClass = (r.Status || "Pending").toLowerCase();
+        const statusLabel =
+          { Pending: "Menunggu", Approved: "Disetujui", Rejected: "Ditolak" }[
+            r.Status
+          ] || r.Status;
+        document.getElementById("detail-body").innerHTML =
+          `<div style="background:var(--navy-50);padding:16px 24px;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:center;"><span class="badge-status ${statusClass}" style="font-size:13px;padding:6px 14px;">${statusLabel}</span><span style="font-size:12px;font-weight:700;color:var(--navy-700);">${r.ID || ""}</span></div><div style="padding:24px;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">${dr("Nama Kegiatan", r["Nama Kegiatan"])}${dr("Bidang", r["Bidang"])}${dr("Mata Anggaran", r["Mata Anggaran"])}${dr("Jumlah", r["Jumlah"])}${dr("Nama Pelaksana", r["Nama Pelaksana"])}${dr("Tipe Verifikasi", r["Tipe Verifikasi"])}${dr("Pengaju", (r["Submitter Name"] || "") + '<br/><span style="color:var(--text-muted);font-size:12px;">' + (r["Submitter Email"] || "") + "</span>")}${dr("Tanggal Upload", r.Timestamp)}</div>${r["Catatan PPK"] ? `<div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:10px;padding:14px 16px;margin-bottom:16px;"><div style="font-size:11px;font-weight:700;color:#92400e;margin-bottom:5px;">CATATAN PPK</div><div style="font-size:13px;color:#78350f;">${r["Catatan PPK"]}</div></div>` : ""}<div style="font-size:12px;font-weight:700;color:var(--navy-700);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;"><i class="bi bi-paperclip me-1"></i> Dokumen Terlampir</div><div>${files}</div></div>`;
+        document.getElementById("modal-detail").classList.add("open");
+      }
+
+      function dr(label, value) {
+        return `<div><div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">${label}</div><div style="font-size:14px;font-weight:500;color:var(--text-dark);">${value || "-"}</div></div>`;
+      }
+
+      async function doApprove(rowIndex) {
+        try {
+          const res = await callBackend("updateLPJStatus", {
+            rowIndex: rowIndex,
+            status: "Approved",
+            catatan: "",
+            supervisorName: App.currentUser.name,
+          });
+          if (res.success) {
+            toast(
+              "LPJ berhasil disetujui. Email notifikasi terkirim.",
+              "success",
+            );
+            refreshAfterAction();
+          } else {
+            toast("Gagal: " + res.message, "error");
+          }
+        } catch (err) {
+          toast("Error: " + err.message, "error");
+        }
+      }
+
+      function openReject(rowIndex) {
+        document.getElementById("reject-row-index").value = rowIndex;
+        document.getElementById("reject-reason").value = "";
+        document.getElementById("modal-reject").classList.add("open");
+      }
+
+      function closeRejectModal() {
+        document.getElementById("modal-reject").classList.remove("open");
+      }
+
+      async function confirmReject() {
+        const rowIndex = parseInt(
+          document.getElementById("reject-row-index").value,
+        );
+        const reason = document.getElementById("reject-reason").value.trim();
+        if (!reason) {
+          alert("Alasan penolakan wajib diisi!");
+          return;
+        }
+
+        closeRejectModal();
+        try {
+          const res = await callBackend("updateLPJStatus", {
+            rowIndex: rowIndex,
+            status: "Rejected",
+            catatan: reason,
+            supervisorName: App.currentUser.name,
+          });
+          if (res.success) {
+            toast("LPJ ditolak. Notifikasi terkirim ke pengaju.", "error");
+            refreshAfterAction();
+          } else {
+            toast("Gagal: " + res.message, "error");
+          }
+        } catch (err) {
+          toast("Error: " + err.message, "error");
+        }
+      }
+
+      function refreshAfterAction() {
+        document.getElementById("modal-detail").classList.remove("open");
+        const page = App.currentPage;
+        if (page === "dashboard") navigateTo("dashboard");
+        else navigateTo("list");
+      }
+
+      function renderSubmitForm(mc) {
+        App.uploadedFiles = {};
+        mc.innerHTML = `<div class="page-header"><div class="breadcrumb-trail"><i class="bi bi-house"></i> <i class="bi bi-chevron-right"></i> Upload LPJ</div><h2>Upload Laporan Pertanggungjawaban</h2><p>Isi formulir dan unggah dokumen yang diperlukan</p></div><div class="form-card"><div class="form-card-header"><div class="header-icon"><i class="bi bi-cloud-upload"></i></div><div><h2>Form Pengajuan LPJ</h2><p>Lengkapi semua field wajib dan unggah berkas pendukung</p></div></div><div class="form-card-body"><div class="form-section-title"><i class="bi bi-info-circle"></i> Informasi Kegiatan</div><div class="row g-3 mb-4"><div class="col-md-6"><label class="form-label">Bidang <span style="color:#dc3545">*</span></label><select id="f-bidang" class="form-select"><option value="">- Pilih Bidang -</option><option>Penegakan Hukum dan Kepatuhan Internal</option><option>Pelayanan dan Fasilitas Keimigrasian</option><option>Lalu Lintas dan Izin Tinggal Keimigrasian</option><option>Teknologi Informasi Keimigrasian</option><option>Kerja Sama Keimigrasian</option><option>Kepegawaian dan Tata Usaha</option></select></div><div class="col-md-6"><label class="form-label">Tipe Perjalanan Dinas <span style="color:#dc3545">*</span></label><select id="f-tipe" class="form-select" onchange="renderDocUploads()"><option value="">- Pilih Tipe -</option><option value="Perjalanan Dinas Riil">Perjalanan Dinas Riil</option><option value="Transport Lokal">Transport Lokal</option></select></div><div class="col-12"><label class="form-label">Nama Kegiatan <span style="color:#dc3545">*</span></label><input id="f-kegiatan" type="text" class="form-control" placeholder="Contoh: Kegiatan Operasi Intelijen Keimigrasian Dalam Rangka Penyurupan"/></div><div class="col-md-6"><label class="form-label">Mata Anggaran (MAK) <span style="color:#dc3545">*</span></label><input id="f-mak" type="text" class="form-control" placeholder="Contoh: 6161.BHB.U13.051.A.521219"/></div><div class="col-md-3"><label class="form-label">Jumlah (Rp)</label><input id="f-jumlah" type="text" class="form-control" placeholder="Contoh: 20.386.890"/></div><div class="col-md-3"><label class="form-label">Nama Pelaksana</label><input id="f-pelaksana" type="text" class="form-control" placeholder="Nama-nama pelaksana"/></div></div><div class="form-section-title"><i class="bi bi-paperclip"></i> Unggah Kelengkapan Dokumen</div><div id="doc-upload-container"><div class="empty-state" style="padding:30px 20px;"><i class="bi bi-arrow-up-circle"></i><p>Pilih Tipe Perjalanan Dinas di atas untuk menampilkan daftar dokumen.</p></div></div><div id="upload-progress" style="display:none;margin:20px 0;"><div style="font-size:13px;font-weight:600;color:var(--navy-700);margin-bottom:8px;" id="progress-label">Mengunggah dokumen...</div><div class="progress-bar-custom"><div class="fill" id="progress-fill"></div></div></div><div style="border-top:1px solid var(--border);padding-top:24px;margin-top:10px;display:flex;gap:12px;flex-wrap:wrap;"><button id="btn-submit" class="btn-gold" onclick="submitForm()" style="flex:1;min-width:180px;"><i class="bi bi-send me-2"></i>Kirim Pengajuan LPJ</button><button class="btn-outline-navy" onclick="resetForm()" style="padding:12px 22px;"><i class="bi bi-arrow-counterclockwise me-1"></i>Reset</button></div></div></div>`;
+      }
+
+      function renderDocUploads() {
+        App.uploadedFiles = {};
+        const tipe = document.getElementById("f-tipe").value;
+        const con = document.getElementById("doc-upload-container");
+        if (!tipe) {
+          con.innerHTML =
+            '<div class="empty-state" style="padding:30px;"><i class="bi bi-arrow-up-circle"></i><p>Pilih tipe untuk menampilkan daftar dokumen.</p></div>';
+          return;
+        }
+        const docs =
+          tipe === "Perjalanan Dinas Riil" ? App.DOCS_RIIL : App.DOCS_LOKAL;
+        let rows = "";
+        docs.forEach(function (doc, i) {
+          rows += `<div class="doc-upload-row" id="doc-row-${doc.key}"><div class="doc-num">${i + 1}</div><div class="doc-label">${doc.label} ${doc.required ? '<span class="doc-required">*</span>' : '<span style="font-size:10px;color:var(--text-muted);"> (opsional)</span>'}</div><input type="file" accept="application/pdf,image/*" onchange="handleFileChange(event, '${doc.key}', '${doc.label}')"/><span class="file-status"><i class="bi bi-check-circle-fill me-1"></i>Terlampir</span></div>`;
+        });
+        con.innerHTML = `<div class="upload-section"><h5><i class="bi bi-files"></i> Dokumen ${tipe} - ${docs.length} item</h5>${rows}</div>`;
+      }
+
+      function handleFileChange(event, docKey, docLabel) {
+        const file = event.target.files[0];
+        const row = document.getElementById("doc-row-" + docKey);
+        if (!file) {
+          delete App.uploadedFiles[docKey];
+          row.classList.remove("has-file");
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const b64 = e.target.result.split(",")[1];
+          App.uploadedFiles[docKey] = {
+            name: file.name,
+            data: b64,
+            mimeType: file.type || "application/octet-stream",
+            docType: docLabel,
+            key: docKey,
+          };
+          row.classList.add("has-file");
+        };
+        reader.readAsDataURL(file);
+      }
+
+      async function submitForm() {
+        const bidang = document.getElementById("f-bidang").value;
+        const kegiatan = document.getElementById("f-kegiatan").value.trim();
+        const mak = document.getElementById("f-mak").value.trim();
+        const tipe = document.getElementById("f-tipe").value;
+        const jumlah = document.getElementById("f-jumlah").value.trim();
+        const pelaksana = document.getElementById("f-pelaksana").value.trim();
+
+        if (!bidang || !kegiatan || !mak || !tipe) {
+          toast(
+            "Harap lengkapi semua field wajib (Bidang, Kegiatan, MAK, Tipe).",
+            "error",
+          );
+          return;
+        }
+        const docs =
+          tipe === "Perjalanan Dinas Riil" ? App.DOCS_RIIL : App.DOCS_LOKAL;
+        const missingRequired = docs.filter(
+          (d) => d.required && !App.uploadedFiles[d.key],
+        );
+        if (missingRequired.length > 0) {
+          toast(
+            "Dokumen wajib belum diunggah: " +
+              missingRequired.map((d) => d.label).join(", "),
+            "error",
+          );
+          return;
+        }
+        if (App.submitting) return;
+        App.submitting = true;
+
+        const btn = document.getElementById("btn-submit");
+        btn.disabled = true;
+        btn.innerHTML =
+          '<span class="spinner-border spinner-border-sm me-2"></span>Mengunggah...';
+
+        const progEl = document.getElementById("upload-progress");
+        const progFill = document.getElementById("progress-fill");
+        if (progEl) progEl.style.display = "block";
+
+        let progress = 10;
+        const timer = setInterval(function () {
+          progress = Math.min(progress + 8, 85);
+          if (progFill) progFill.style.width = progress + "%";
+          if (progress >= 85) clearInterval(timer);
+        }, 300);
+
+        const payload = {
+          submitterEmail: App.currentUser.email,
+          submitterName: App.currentUser.name,
+          bidang: bidang,
+          namaKegiatan: kegiatan,
+          mataAnggaran: mak,
+          jumlah: jumlah,
+          pelaksana: pelaksana,
+          tipeVerifikasi: tipe,
+          files: Object.values(App.uploadedFiles),
+        };
+
+        try {
+          const res = await callBackend("submitLPJ", payload);
+          clearInterval(timer);
+          App.submitting = false;
+          btn.disabled = false;
+          btn.innerHTML = '<i class="bi bi-send me-2"></i>Kirim Pengajuan LPJ';
+          if (progEl) progEl.style.display = "none";
+
+          if (res.success) {
+            if (progFill) progFill.style.width = "100%";
+            toast(
+              "Pengajuan berhasil! ID: " +
+                res.id +
+                ". Notifikasi terkirim ke PPK.",
+              "success",
+            );
+            setTimeout(function () {
+              resetForm();
+              navigateTo("my_lpj");
+            }, 2000);
+          } else {
+            toast(
+              "Gagal mengajukan: " + (res.message || "Terjadi kesalahan."),
+              "error",
+            );
+          }
+        } catch (err) {
+          clearInterval(timer);
+          App.submitting = false;
+          btn.disabled = false;
+          btn.innerHTML = '<i class="bi bi-send me-2"></i>Kirim Pengajuan LPJ';
+          if (progEl) progEl.style.display = "none";
+          toast("Koneksi gagal: " + err.message, "error");
+        }
+      }
+
+      function resetForm() {
+        App.uploadedFiles = {};
+        renderSubmitForm(document.getElementById("main-content"));
+      }
+
+      function renderInfo(mc) {
+        mc.innerHTML = `<div class="page-header"><div class="breadcrumb-trail"><i class="bi bi-house"></i> <i class="bi bi-chevron-right"></i> Panduan</div><h2>Panduan Penggunaan SMART LPJ</h2><p>Petunjuk singkat penggunaan sistem</p></div><div class="card" style="padding:28px;"><h4 style="color:var(--navy-900);margin-bottom:20px;">📌 Alur Pengajuan LPJ Digital</h4><div style="display:flex;flex-direction:column;gap:16px;">${step(1, "Staf PPK mengisi form pengajuan", "Pilih Bidang, Tipe Perjalanan Dinas, isi Nama Kegiatan dan Mata Anggaran.")}${step(2, "Upload dokumen kelengkapan", "Unggah semua dokumen wajib sesuai tipe perjalanan dinas (PDF/gambar).")}${step(3, "Kirim pengajuan", "Klik tombol Kirim. Sistem akan menyimpan data ke Spreadsheet dan mengirim email notifikasi ke PPK.")}${step(4, "PPK melakukan verifikasi", "PPK login, buka dashboard, review dokumen, lalu klik Setuju atau Tolak.")}${step(5, "Staf PPK menerima notifikasi", "Email otomatis dikirim ke Staf PPK berisi status persetujuan atau alasan penolakan.")}</div><hr style="margin:24px 0;border-color:var(--border);"><h5 style="color:var(--navy-800);margin-bottom:12px;">📄 Dokumen yang Diperlukan</h5><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;"><div><div style="font-size:12px;font-weight:700;color:var(--navy-700);margin-bottom:8px;">PERJALANAN DINAS RIIL</div>${App.DOCS_RIIL.map((d) => `<div style="font-size:13px;margin-bottom:4px;">${d.required ? "🔴" : "🔵"} ${d.label}</div>`).join("")}</div><div><div style="font-size:12px;font-weight:700;color:var(--navy-700);margin-bottom:8px;">TRANSPORT LOKAL</div>${App.DOCS_LOKAL.map((d) => `<div style="font-size:13px;margin-bottom:4px;">${d.required ? "🔴" : "🔵"} ${d.label}</div>`).join("")}</div></div><div style="margin-top:16px;font-size:12px;color:var(--text-muted);">🔴 = Wajib &nbsp;&nbsp; 🔵 = Opsional</div></div>`;
+      }
+
+      function step(n, title, desc) {
+        return `<div style="display:flex;gap:16px;align-items:flex-start;"><div style="width:32px;height:32px;border-radius:50%;background:var(--navy-700);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;">${n}</div><div><div style="font-weight:700;color:var(--navy-900);margin-bottom:3px;">${title}</div><div style="font-size:13px;color:var(--text-muted);">${desc}</div></div></div>`;
+      }
+
+      function toast(msg, type) {
+        const icons = {
+          success: "bi-check-circle-fill",
+          error: "bi-exclamation-circle-fill",
+          default: "bi-info-circle-fill",
+        };
+        const t = document.createElement("div");
+        t.className = "toast-msg " + (type || "default");
+        t.innerHTML = `<i class="bi ${icons[type] || icons.default}"></i><span>${msg}</span>`;
+        document.getElementById("toast-container").appendChild(t);
+        setTimeout(function () {
+          t.remove();
+        }, 3200);
+      }
+
+      ["modal-reject", "modal-detail"].forEach(function (id) {
+        document.getElementById(id).addEventListener("click", function (e) {
+          if (e.target === this) this.classList.remove("open");
+        });
+      });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
