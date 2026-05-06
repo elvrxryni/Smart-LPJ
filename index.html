@@ -1184,7 +1184,7 @@
         </p>
         <div class="badge-org">
           <i class="bi bi-building me-1"></i>Kanwil Ditjen Imigrasi Maluku
-          &nbsp;·&nbsp; 2026
+          &nbsp;·&nbsp; <span class="dynamic-year"></span>
         </div>
       </div>
 
@@ -1272,7 +1272,9 @@
           "
         >
           Hubungi admin sistem jika Anda belum memiliki akun.<br />
-          <strong>Kanwil Ditjen Imigrasi Maluku - 2026</strong>
+          <strong
+            >Kanwil Ditjen Imigrasi Maluku - <span class="dynamic-year"></span
+          ></strong>
         </p>
       </div>
     </div>
@@ -1387,12 +1389,8 @@
     <div class="toast-container" id="toast-container"></div>
 
     <script>
-      // ==========================================
-      // BACKEND CONFIGURATION
-      // ==========================================
-      // REPLACE THIS URL WITH YOUR GOOGLE APPS SCRIPT WEB APP URL
       const SCRIPT_URL =
-        "https://script.google.com/macros/s/AKfycbyzhxP7qsja60rbnVG9cc_7cB6_29LBNwTXuCiEq04gZpRHdPgwlADoLrx0tkV0MRsm/exec";
+        "https://script.google.com/macros/s/AKfycbw5X_M0LQRA26J1gcDtxNpK41aeIrMOL8XJbm8axwt3L7WHENXKYZdktRZEgAXQhOPITg/exec";
 
       const App = {
         currentUser: null,
@@ -1402,6 +1400,7 @@
         searchQuery: "",
         uploadedFiles: {},
         submitting: false,
+        acuan: {},
         DOCS_RIIL: [
           { key: "nota_dinas", label: "Nota Dinas", required: true },
           { key: "daftar_nom", label: "Daftar Nominatif", required: true },
@@ -1418,14 +1417,15 @@
           {
             key: "daftar_pengeluaran",
             label: "Daftar Pengeluaran Riil",
-            required: false,
+            required: true,
           },
           {
             key: "tiket_boarding",
             label: "Tiket & Boarding Pass",
-            required: false,
+            required: true,
           },
-          { key: "spp", label: "SPP", required: true },
+          { key: "spp", label: "SPP", required: false },
+          { key: "rab", label: "RAB", required: true },
         ],
         DOCS_LOKAL: [
           { key: "nota_dinas", label: "Nota Dinas", required: true },
@@ -1437,12 +1437,13 @@
             required: true,
           },
           { key: "pok_terakhir", label: "POK Terakhir", required: false },
-          { key: "spp", label: "SPP", required: true },
+          { key: "spp", label: "SPP", required: false },
           {
             key: "bukti_transport",
             label: "Bukti Transport Lokal",
             required: true,
           },
+          { key: "rab", label: "RAB", required: true },
         ],
       };
 
@@ -1461,9 +1462,15 @@
       }
 
       window.onload = function () {
+        document
+          .querySelectorAll(".dynamic-year")
+          .forEach((el) => (el.textContent = new Date().getFullYear()));
         const savedUser = sessionStorage.getItem("smartLpjUser");
-        if (savedUser) {
+        const savedAcuan = sessionStorage.getItem("smartLpjAcuan");
+
+        if (savedUser && savedAcuan) {
           App.currentUser = JSON.parse(savedUser);
+          App.acuan = JSON.parse(savedAcuan);
           initShell();
           showView("app");
         } else {
@@ -1537,7 +1544,9 @@
 
           if (res.success) {
             App.currentUser = res.user;
+            App.acuan = res.acuan;
             sessionStorage.setItem("smartLpjUser", JSON.stringify(res.user));
+            sessionStorage.setItem("smartLpjAcuan", JSON.stringify(res.acuan));
 
             initShell();
             showView("app");
@@ -1802,7 +1811,14 @@
             r.Status
           ] || r.Status;
         document.getElementById("detail-body").innerHTML =
-          `<div style="background:var(--navy-50);padding:16px 24px;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:center;"><span class="badge-status ${statusClass}" style="font-size:13px;padding:6px 14px;">${statusLabel}</span><span style="font-size:12px;font-weight:700;color:var(--navy-700);">${r.ID || ""}</span></div><div style="padding:24px;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">${dr("Nama Kegiatan", r["Nama Kegiatan"])}${dr("Bidang", r["Bidang"])}${dr("Mata Anggaran", r["Mata Anggaran"])}${dr("Jumlah", r["Jumlah"])}${dr("Nama Pelaksana", r["Nama Pelaksana"])}${dr("Tipe Verifikasi", r["Tipe Verifikasi"])}${dr("Pengaju", (r["Submitter Name"] || "") + '<br/><span style="color:var(--text-muted);font-size:12px;">' + (r["Submitter Email"] || "") + "</span>")}${dr("Tanggal Upload", r.Timestamp)}</div>${r["Catatan PPK"] ? `<div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:10px;padding:14px 16px;margin-bottom:16px;"><div style="font-size:11px;font-weight:700;color:#92400e;margin-bottom:5px;">CATATAN PPK</div><div style="font-size:13px;color:#78350f;">${r["Catatan PPK"]}</div></div>` : ""}<div style="font-size:12px;font-weight:700;color:var(--navy-700);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;"><i class="bi bi-paperclip me-1"></i> Dokumen Terlampir</div><div>${files}</div></div>`;
+          `<div style="background:var(--navy-50);padding:16px 24px;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:center;">
+            <span class="badge-status ${statusClass}" style="font-size:13px;padding:6px 14px;">${statusLabel}</span>
+            <span style="font-size:12px;font-weight:700;color:var(--navy-700);">
+              ${r.ID || ""}
+            </span>
+            </div>
+            <div style="padding:24px;">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">${dr("Nama Kegiatan", r["Nama Kegiatan"])}${dr("Tanggal Pelaksanaan", r["Tanggal Pelaksanaan"])}${dr("Bidang", r["Bidang"])}${dr("Mata Anggaran", r["Mata Anggaran"])}${dr("Nomor Sprint", r["Nomor Sprint"])}${dr("Jumlah", r["Jumlah"])}${dr("Nama Pelaksana", r["Nama Pelaksana"])}${dr("Tipe Verifikasi", r["Tipe Verifikasi"])}${dr("Pengaju", (r["Submitter Name"] || "") + '<br/><span style="color:var(--text-muted);font-size:12px;">' + (r["Submitter Email"] || "") + "</span>")}${dr("Tanggal Upload", r.Timestamp)}</div>${r["Catatan PPK"] ? `<div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:10px;padding:14px 16px;margin-bottom:16px;"><div style="font-size:11px;font-weight:700;color:#92400e;margin-bottom:5px;">CATATAN PPK</div><div style="font-size:13px;color:#78350f;">${r["Catatan PPK"]}</div></div>` : ""}<div style="font-size:12px;font-weight:700;color:var(--navy-700);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;"><i class="bi bi-paperclip me-1"></i> Dokumen Terlampir</div><div>${files}</div></div>`;
         document.getElementById("modal-detail").classList.add("open");
       }
 
@@ -1903,7 +1919,155 @@
 
       function renderSubmitForm(mc) {
         App.uploadedFiles = {};
-        mc.innerHTML = `<div class="page-header"><div class="breadcrumb-trail"><i class="bi bi-house"></i> <i class="bi bi-chevron-right"></i> Upload LPJ</div><h2>Upload Laporan Pertanggungjawaban</h2><p>Isi formulir dan unggah dokumen yang diperlukan</p></div><div class="form-card"><div class="form-card-header"><div class="header-icon"><i class="bi bi-cloud-upload"></i></div><div><h2>Form Pengajuan LPJ</h2><p>Lengkapi semua field wajib dan unggah berkas pendukung</p></div></div><div class="form-card-body"><div class="form-section-title"><i class="bi bi-info-circle"></i> Informasi Kegiatan</div><div class="row g-3 mb-4"><div class="col-md-6"><label class="form-label">Bidang <span style="color:#dc3545">*</span></label><select id="f-bidang" class="form-select"><option value="">- Pilih Bidang -</option><option>Penegakan Hukum dan Kepatuhan Internal</option><option>Pelayanan dan Fasilitas Keimigrasian</option><option>Lalu Lintas dan Izin Tinggal Keimigrasian</option><option>Teknologi Informasi Keimigrasian</option><option>Kerja Sama Keimigrasian</option><option>Kepegawaian dan Tata Usaha</option></select></div><div class="col-md-6"><label class="form-label">Tipe Perjalanan Dinas <span style="color:#dc3545">*</span></label><select id="f-tipe" class="form-select" onchange="renderDocUploads()"><option value="">- Pilih Tipe -</option><option value="Perjalanan Dinas Riil">Perjalanan Dinas Riil</option><option value="Transport Lokal">Transport Lokal</option></select></div><div class="col-12"><label class="form-label">Nama Kegiatan <span style="color:#dc3545">*</span></label><input id="f-kegiatan" type="text" class="form-control" placeholder="Contoh: Kegiatan Operasi Intelijen Keimigrasian Dalam Rangka Penyurupan"/></div><div class="col-md-6"><label class="form-label">Mata Anggaran (MAK) <span style="color:#dc3545">*</span></label><input id="f-mak" type="text" class="form-control" placeholder="Contoh: 6161.BHB.U13.051.A.521219"/></div><div class="col-md-3"><label class="form-label">Jumlah (Rp)</label><input id="f-jumlah" type="text" class="form-control" placeholder="Contoh: 20.386.890"/></div><div class="col-md-3"><label class="form-label">Nama Pelaksana</label><input id="f-pelaksana" type="text" class="form-control" placeholder="Nama-nama pelaksana"/></div></div><div class="form-section-title"><i class="bi bi-paperclip"></i> Unggah Kelengkapan Dokumen</div><div id="doc-upload-container"><div class="empty-state" style="padding:30px 20px;"><i class="bi bi-arrow-up-circle"></i><p>Pilih Tipe Perjalanan Dinas di atas untuk menampilkan daftar dokumen.</p></div></div><div id="upload-progress" style="display:none;margin:20px 0;"><div style="font-size:13px;font-weight:600;color:var(--navy-700);margin-bottom:8px;" id="progress-label">Mengunggah dokumen...</div><div class="progress-bar-custom"><div class="fill" id="progress-fill"></div></div></div><div style="border-top:1px solid var(--border);padding-top:24px;margin-top:10px;display:flex;gap:12px;flex-wrap:wrap;"><button id="btn-submit" class="btn-gold" onclick="submitForm()" style="flex:1;min-width:180px;"><i class="bi bi-send me-2"></i>Kirim Pengajuan LPJ</button><button class="btn-outline-navy" onclick="resetForm()" style="padding:12px 22px;"><i class="bi bi-arrow-counterclockwise me-1"></i>Reset</button></div></div></div>`;
+        mc.innerHTML = `<div class="page-header">
+  <div class="breadcrumb-trail">
+    <i class="bi bi-house"></i> <i class="bi bi-chevron-right"></i> Upload LPJ
+  </div>
+  <h2>Upload Laporan Pertanggungjawaban</h2>
+  <p>Isi formulir dan unggah dokumen yang diperlukan</p>
+</div>
+<div class="form-card">
+  <div class="form-card-header">
+    <div class="header-icon"><i class="bi bi-cloud-upload"></i></div>
+    <div>
+      <h2>Form Pengajuan LPJ</h2>
+      <p>Lengkapi semua field wajib dan unggah berkas pendukung</p>
+    </div>
+  </div>
+  <div class="form-card-body">
+    <div class="form-section-title">
+      <i class="bi bi-info-circle"></i> Informasi Kegiatan
+    </div>
+    <div class="row g-3 mb-4">
+      <div class="col-md-6">
+        <label class="form-label"
+          >Bidang <span style="color: #dc3545">*</span></label
+        ><select id="f-bidang" class="form-select">
+          <option value="">- Pilih Bidang -</option>
+          <option>Penegakan Hukum dan Kepatuhan Internal</option>
+          <option>Pelayanan dan Fasilitas Keimigrasian</option>
+          <option>
+            Dokumen Perjalanan, Izin Tinggal dan Status Keimigrasian
+          </option>
+          <option>Teknologi Informasi Keimigrasian</option>
+          <option>Kepegawaian / SDM</option>
+          <option>Tata Usaha dan Umum</option>
+          <option>Keuangan</option>
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label"
+          >Tipe Perjalanan Dinas <span style="color: #dc3545">*</span></label
+        ><select id="f-tipe" class="form-select" onchange="renderDocUploads()">
+          <option value="">- Pilih Tipe -</option>
+          <option value="Perjalanan Dinas Riil">Perjalanan Dinas Riil</option>
+          <option value="Transport Lokal">Transport Lokal</option>
+        </select>
+      </div>
+      <div class="col-md-8">
+        <label class="form-label"
+          >Nama Kegiatan <span style="color: #dc3545">*</span></label
+        ><input
+          id="f-kegiatan"
+          type="text"
+          class="form-control"
+          placeholder="Contoh: Kegiatan Operasi Intelijen..."
+        />
+      </div>
+      <div class="col-md-4">
+        <label class="form-label"
+          >Tanggal Pelaksanaan <span style="color: #dc3545">*</span></label
+        ><input id="f-tanggal" type="date" class="form-control" />
+      </div>
+      <div class="col-md-6">
+        <label class="form-label"
+          >Mata Anggaran (MAK) <span style="color: #dc3545">*</span></label
+        ><input
+          id="f-mak"
+          type="text"
+          class="form-control"
+          placeholder="Contoh: 6161.BHB.U13..."
+        />
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Nomor Sprint <span style="color: #dc3545">*</span></label>
+        <input id="f-sprint" type="text" class="form-control" placeholder="Contoh: W.28-GR..."/>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Jumlah (Rp)</label
+        ><input
+          id="f-jumlah"
+          type="text"
+          class="form-control"
+          placeholder="Contoh: 20.386.890"
+        />
+      </div>
+      <div class="col-md-full">
+        <label class="form-label">Nama Pelaksana</label
+        ><input
+          id="f-pelaksana"
+          type="text"
+          class="form-control"
+          placeholder="Nama-nama pelaksana"
+        />
+      </div>
+    </div>
+    <div class="form-section-title">
+      <i class="bi bi-paperclip"></i> Unggah Kelengkapan Dokumen
+    </div>
+    <div id="doc-upload-container">
+      <div class="empty-state" style="padding: 30px 20px">
+        <i class="bi bi-arrow-up-circle"></i>
+        <p>
+          Pilih Tipe Perjalanan Dinas di atas untuk menampilkan daftar dokumen.
+        </p>
+      </div>
+    </div>
+    <div id="upload-progress" style="display: none; margin: 20px 0">
+      <div
+        style="
+          font-size: 13px;
+          font-weight: 600;
+          color: var(--navy-700);
+          margin-bottom: 8px;
+        "
+        id="progress-label"
+      >
+        Mengunggah dokumen...
+      </div>
+      <div class="progress-bar-custom">
+        <div class="fill" id="progress-fill"></div>
+      </div>
+    </div>
+    <div
+      style="
+        border-top: 1px solid var(--border);
+        padding-top: 24px;
+        margin-top: 10px;
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      "
+    >
+      <button
+        id="btn-submit"
+        class="btn-gold"
+        onclick="submitForm()"
+        style="flex: 1; min-width: 180px"
+      >
+        <i class="bi bi-send me-2"></i>Kirim LPJ
+      </button>
+      <button
+        class="btn-outline-navy"
+        onclick="resetForm()"
+        style="padding: 12px 22px"
+      >
+        <i class="bi bi-arrow-counterclockwise me-1"></i>Reset
+      </button>
+    </div>
+  </div>
+</div>
+`;
       }
 
       function renderDocUploads() {
@@ -1989,14 +2153,16 @@
       async function submitForm() {
         const bidang = document.getElementById("f-bidang").value;
         const kegiatan = document.getElementById("f-kegiatan").value.trim();
+        const tanggal = document.getElementById("f-tanggal").value;
         const mak = document.getElementById("f-mak").value.trim();
+        const sprint = document.getElementById("f-sprint").value.trim();
         const tipe = document.getElementById("f-tipe").value;
         const jumlah = document.getElementById("f-jumlah").value.trim();
         const pelaksana = document.getElementById("f-pelaksana").value.trim();
 
-        if (!bidang || !kegiatan || !mak || !tipe) {
+        if (!bidang || !kegiatan || !tanggal || !mak || !sprint || !tipe) {
           toast(
-            "Harap lengkapi semua field wajib (Bidang, Kegiatan, MAK, Tipe).",
+            "Harap lengkapi semua field wajib (Bidang, Kegiatan, MAK, Nomor Sprint, Tipe).",
             "error",
           );
           return;
@@ -2030,7 +2196,9 @@
           submitterName: App.currentUser.name,
           bidang: bidang,
           namaKegiatan: kegiatan,
+          tanggal: tanggal,
           mataAnggaran: mak,
+          nomorSprint: sprint,
           jumlah: jumlah,
           pelaksana: pelaksana,
           tipeVerifikasi: tipe,
@@ -2041,7 +2209,7 @@
           const res = await callBackend("submitLPJ", payload);
           App.submitting = false;
           btn.disabled = false;
-          btn.innerHTML = '<i class="bi bi-send me-2"></i>Kirim Pengajuan LPJ';
+          btn.innerHTML = '<i class="bi bi-send me-2"></i>Kirim LPJ';
 
           if (res.success) {
             toast(
@@ -2063,7 +2231,7 @@
         } catch (err) {
           App.submitting = false;
           btn.disabled = false;
-          btn.innerHTML = '<i class="bi bi-send me-2"></i>Kirim Pengajuan LPJ';
+          btn.innerHTML = '<i class="bi bi-send me-2"></i>Kirim LPJ';
           toast("Koneksi gagal: " + err.message, "error");
         }
       }
@@ -2074,7 +2242,23 @@
       }
 
       function renderInfo(mc) {
-        mc.innerHTML = `<div class="page-header"><div class="breadcrumb-trail"><i class="bi bi-house"></i> <i class="bi bi-chevron-right"></i> Panduan</div><h2>Panduan Penggunaan SMART LPJ</h2><p>Petunjuk singkat penggunaan sistem</p></div><div class="card" style="padding:28px;"><h4 style="color:var(--navy-900);margin-bottom:20px;">📌 Alur Pengajuan LPJ Digital</h4><div style="display:flex;flex-direction:column;gap:16px;">${step(1, "Staf PPK mengisi form pengajuan", "Pilih Bidang, Tipe Perjalanan Dinas, isi Nama Kegiatan dan Mata Anggaran.")}${step(2, "Upload dokumen kelengkapan", "Unggah semua dokumen wajib sesuai tipe perjalanan dinas (PDF/gambar).")}${step(3, "Kirim pengajuan", "Klik tombol Kirim. Sistem akan menyimpan data ke Spreadsheet dan mengirim email notifikasi ke PPK.")}${step(4, "PPK melakukan verifikasi", "PPK login, buka dashboard, review dokumen, lalu klik Setuju atau Tolak.")}${step(5, "Staf PPK menerima notifikasi", "Email otomatis dikirim ke Staf PPK berisi status persetujuan atau alasan penolakan.")}</div><hr style="margin:24px 0;border-color:var(--border);"><h5 style="color:var(--navy-800);margin-bottom:12px;">📄 Dokumen yang Diperlukan</h5><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;"><div><div style="font-size:12px;font-weight:700;color:var(--navy-700);margin-bottom:8px;">PERJALANAN DINAS RIIL</div>${App.DOCS_RIIL.map((d) => `<div style="font-size:13px;margin-bottom:4px;">${d.required ? "🔴" : "🔵"} ${d.label}</div>`).join("")}</div><div><div style="font-size:12px;font-weight:700;color:var(--navy-700);margin-bottom:8px;">TRANSPORT LOKAL</div>${App.DOCS_LOKAL.map((d) => `<div style="font-size:13px;margin-bottom:4px;">${d.required ? "🔴" : "🔵"} ${d.label}</div>`).join("")}</div></div><div style="margin-top:16px;font-size:12px;color:var(--text-muted);">🔴 = Wajib &nbsp;&nbsp; 🔵 = Opsional</div></div>`;
+        const acuanFiles = Object.entries(App.acuan)
+          .map(
+            ([Label, URL]) =>
+              `<a href="${URL}" target="_blank" class="file-link" style="padding:10px 16px;font-size:13px;border-color:#cbd5e1;"><i class="bi bi-file-earmark-pdf me-2" style="color:#dc3545;font-size:18px;"></i>${Label}</a>`,
+          )
+          .join("");
+        const acuan = acuanFiles
+          ? `<hr style="margin:24px 0;border-color:var(--border);">
+        <h5 style="color:var(--navy-800);margin-bottom:12px;">📂 Bahan Acuan</h5>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Klik dokumen di bawah ini untuk melihat standar biaya dan rincian kerja.</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          ${acuanFiles}
+        </div>`
+          : "";
+        mc.innerHTML = `<div class="page-header"><div class="breadcrumb-trail"><i class="bi bi-house"></i> <i class="bi bi-chevron-right"></i> Panduan</div><h2>Panduan Penggunaan SMART LPJ</h2><p>Petunjuk singkat penggunaan sistem</p></div><div class="card" style="padding:28px;"><h4 style="color:var(--navy-900);margin-bottom:20px;">📌 Alur Pengajuan LPJ Digital</h4><div style="display:flex;flex-direction:column;gap:16px;">${step(1, "Staf PPK mengisi form pengajuan", "Pilih Bidang, Tipe Perjalanan Dinas, isi Nama Kegiatan, Mata Anggaran, dan Nomor Sprint.")}${step(2, "Upload dokumen kelengkapan", "Unggah semua dokumen wajib sesuai tipe perjalanan dinas (PDF/gambar).")}${step(3, "Kirim pengajuan", "Klik tombol Kirim. Sistem akan menyimpan data ke Spreadsheet dan mengirim email notifikasi ke PPK.")}${step(4, "PPK melakukan verifikasi", "PPK login, buka dashboard, review dokumen, lalu klik Setuju atau Tolak.")}${step(5, "Staf PPK menerima notifikasi", "Email otomatis dikirim ke Staf PPK berisi status persetujuan atau alasan penolakan.")}</div><hr style="margin:24px 0;border-color:var(--border);"><h5 style="color:var(--navy-800);margin-bottom:12px;">📄 Dokumen yang Diperlukan</h5><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;"><div><div style="font-size:12px;font-weight:700;color:var(--navy-700);margin-bottom:8px;">PERJALANAN DINAS RIIL</div>${App.DOCS_RIIL.map((d) => `<div style="font-size:13px;margin-bottom:4px;">${d.required ? "🔴" : "🔵"} ${d.label}</div>`).join("")}</div><div><div style="font-size:12px;font-weight:700;color:var(--navy-700);margin-bottom:8px;">TRANSPORT LOKAL</div>${App.DOCS_LOKAL.map((d) => `<div style="font-size:13px;margin-bottom:4px;">${d.required ? "🔴" : "🔵"} ${d.label}</div>`).join("")}</div></div><div style="margin-top:16px;font-size:12px;color:var(--text-muted);">🔴 = Wajib &nbsp;&nbsp; 🔵 = Opsional</div>
+        ${acuan}
+        </div>`;
       }
 
       function step(n, title, desc) {
