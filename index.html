@@ -1390,7 +1390,7 @@
 
     <script>
       const SCRIPT_URL =
-        "https://script.google.com/macros/s/AKfycbw-SyvXHEVDDxizDidXRDkVqFzRsNH6cPB1Vatq8YouTKq-PSmXSeH4qmoeR4YIWPvIkg/exec";
+        "https://script.google.com/macros/s/AKfycbxz11eNXSaGGhi_L9oJqJ0F-H45u00kYPH9DRqvoYh48TUc0xiKcsA9al0IoXEZs53AHg/exec";
 
       const App = {
         currentUser: null,
@@ -1426,7 +1426,7 @@
           },
           { key: "spp", label: "SPP", required: false },
           { key: "rab", label: "RAB", required: true },
-          { key: "belanja_sewa", label: "Belanja Sewa", required: false }
+          { key: "belanja_sewa", label: "Belanja Sewa", required: false },
         ],
         DOCS_LOKAL: [
           { key: "nota_dinas", label: "Nota Dinas", required: true },
@@ -1445,7 +1445,7 @@
             required: true,
           },
           { key: "rab", label: "RAB", required: true },
-          { key: "belanja_sewa", label: "Belanja Sewa", required: false }
+          { key: "belanja_sewa", label: "Belanja Sewa", required: false },
         ],
       };
 
@@ -1475,6 +1475,7 @@
           App.acuan = JSON.parse(savedAcuan);
           initShell();
           showView("app");
+          syncAcuan();
         } else {
           showView("login");
         }
@@ -1561,6 +1562,22 @@
           btn.innerHTML =
             '<i class="bi bi-box-arrow-in-right me-2"></i>Masuk ke Sistem';
           showAlert(err.message);
+        }
+      }
+
+      async function syncAcuan() {
+        try {
+          const res = await callBackend("getAcuan", {});
+          if (res.success && res.acuan) {
+            App.acuan = res.acuan;
+            sessionStorage.setItem("smartLpjAcuan", JSON.stringify(res.acuan));
+
+            if (App.currentPage === "info") {
+              renderInfo(document.getElementById("main-content"));
+            }
+          }
+        } catch (err) {
+          console.error("Gagal menyinkronkan bahan acuan:", err);
         }
       }
 
@@ -1687,7 +1704,68 @@
 
       function renderList(mc, role) {
         const isSup = role === "supervisor";
-        mc.innerHTML = `<div class="page-header"><div class="breadcrumb-trail"><i class="bi bi-house"></i> <i class="bi bi-chevron-right"></i> ${isSup ? "Semua Pengajuan" : "LPJ Saya"}</div><h2>${isSup ? "Daftar Pengajuan LPJ" : "LPJ Saya"}</h2><p>${isSup ? "Verifikasi dan kelola semua pengajuan" : "Pantau status pengajuan LPJ Anda"}</p></div><div class="filter-bar"><div class="search-box"><i class="bi bi-search"></i><input type="text" placeholder="Cari kegiatan, bidang, pengaju..." id="search-input" oninput="filterList()"/></div><button class="filter-btn active" data-f="all" onclick="setFilter(this,'all')">Semua</button><button class="filter-btn" data-f="Pending" onclick="setFilter(this,'Pending')">⏳ Pending</button><button class="filter-btn" data-f="Approved" onclick="setFilter(this,'Approved')">✅ Disetujui</button><button class="filter-btn" data-f="Rejected" onclick="setFilter(this,'Rejected')">❌ Ditolak</button></div><div class="card"><div class="card-header-bar"><div><h3>Daftar Pengajuan</h3><p id="list-count">Memuat...</p></div><button class="btn-outline-navy" style="padding:7px 16px;font-size:13px;" onclick="refreshList('${role}', this)"><i class="bi bi-arrow-clockwise me-1"></i>Refresh</button></div><div class="table-wrapper"><div id="list-table-container" style="padding:16px;"><div class="empty-state"><i class="bi bi-arrow-repeat"></i><p>Memuat data...</p></div></div></div></div>`;
+        mc.innerHTML = `
+<div class="page-header">
+  <div class="breadcrumb-trail">
+    <i class="bi bi-house"></i> <i class="bi bi-chevron-right"></i> ${
+      isSup ? "Semua Pengajuan" : "LPJ Saya"
+    }
+  </div>
+  <h2>${isSup ? "Daftar Pengajuan LPJ" : "LPJ Saya"}</h2>
+  <p>
+    ${isSup ? "Verifikasi dan kelola semua pengajuan" : "Pantau status pengajuan LPJ Anda"}
+  </p>
+</div>
+
+<div class="filter-bar" style="flex-wrap: wrap; gap: 12px;">
+  <div class="search-box" style="flex: 1; min-width: 200px;">
+    <i class="bi bi-search"></i>
+    <input type="text" placeholder="Cari ID, kegiatan, pengaju..." id="search-input" oninput="filterList()">
+  </div>
+  
+  <div style="display:flex; gap:8px; align-items:center; background:#fff; padding:4px 8px; border-radius:8px; border:1px solid var(--border); flex-wrap:wrap;">
+    <select id="filter-date-type" class="form-select" style="width:auto; font-size:12px; border:none; padding:4px 30px 4px 8px; cursor:pointer;" onchange="filterList()">
+      <option value="pelaksanaan">Tgl Pelaksanaan</option>
+      <option value="timestamp">Waktu Upload</option>
+    </select>
+    <span style="color:#cbd5e1;">|</span>
+    <input type="date" id="filter-date-start" class="form-control" style="width:120px; font-size:12px; border:none; padding:4px;" onchange="filterList()" title="Mulai Tanggal">
+    <span style="color:var(--text-muted); font-size:12px; font-weight:600;">s/d</span>
+    <input type="date" id="filter-date-end" class="form-control" style="width:120px; font-size:12px; border:none; padding:4px;" onchange="filterList()" title="Sampai Tanggal">
+  </div>
+
+</div>
+
+<div style="display:flex; gap:8px; overflow-x:auto; margin: 8px;">
+  <button class="filter-btn active" data-f="all" onclick="setFilter(this,'all')">Semua</button>
+  <button class="filter-btn" data-f="Pending" onclick="setFilter(this,'Pending')">⏳ Pending</button>
+  <button class="filter-btn" data-f="Approved" onclick="setFilter(this,'Approved')">✅ Disetujui</button>
+  <button class="filter-btn" data-f="Rejected" onclick="setFilter(this,'Rejected')">❌ Ditolak</button>
+</div>
+
+<div class="card">
+  <div class="card-header-bar">
+    <div>
+      <h3>Daftar Pengajuan</h3>
+      <p id="list-count">Memuat...</p>
+    </div>
+    <button
+      class="btn-outline-navy"
+      style="padding: 7px 16px; font-size: 13px"
+      onclick="refreshList('${role}', this)"
+    >
+      <i class="bi bi-arrow-clockwise me-1"></i>Refresh
+    </button>
+  </div>
+  <div class="table-wrapper">
+    <div id="list-table-container" style="padding: 16px">
+      <div class="empty-state">
+        <i class="bi bi-arrow-repeat"></i>
+        <p>Memuat data...</p>
+      </div>
+    </div>
+  </div>
+</div>`;
         App.filterStatus = "all";
         App.searchQuery = "";
         refreshList(role);
@@ -1731,35 +1809,62 @@
       }
 
       function filterList() {
-        const q = (document.getElementById("search-input") || {}).value || "";
-        App.searchQuery = q.toLowerCase();
-        let data = App.allLPJ;
-        if (App.filterStatus !== "all")
-          data = data.filter((r) => r.Status === App.filterStatus);
-        if (App.searchQuery) {
-          data = data.filter(
-            (r) =>
-              (r["Nama Kegiatan"] || "")
-                .toLowerCase()
-                .includes(App.searchQuery) ||
-              (r["Bidang"] || "").toLowerCase().includes(App.searchQuery) ||
-              (r["Submitter Name"] || "")
-                .toLowerCase()
-                .includes(App.searchQuery) ||
-              (r["ID"] || "").toLowerCase().includes(App.searchQuery),
-          );
-        }
-        const isSup = App.currentUser.role === "supervisor";
-        const con = document.getElementById("list-table-container");
-        const cnt = document.getElementById("list-count");
-        if (!con) return;
-        if (cnt) cnt.textContent = data.length + " pengajuan ditemukan";
-        if (!data.length) {
-          con.innerHTML =
-            '<div class="empty-state"><i class="bi bi-search"></i><p>Tidak ada data yang sesuai.</p></div>';
-          return;
-        }
-        con.innerHTML = buildTable(data, isSup);
+        const q = document.getElementById("search-input").value.toLowerCase();
+        const activeBtn = document.querySelector(".filter-btn.active");
+        const f = activeBtn ? activeBtn.getAttribute("data-f") : "all";
+
+        const dateType = document.getElementById("filter-date-type").value;
+        const startDate = document.getElementById("filter-date-start").value;
+        const endDate = document.getElementById("filter-date-end").value;
+
+        const filtered = App.allLPJ.filter(function (r) {
+          const matchStatus = f === "all" || r.Status === f;
+
+          // Normalize the date based on the dropdown selection
+          let rowDateStr = "";
+          if (dateType === "pelaksanaan" && r["Tanggal Pelaksanaan"]) {
+            const d = new Date(r["Tanggal Pelaksanaan"]);
+            if (!isNaN(d.getTime())) {
+              const mm = String(d.getMonth() + 1).padStart(2, "0");
+              const dd = String(d.getDate()).padStart(2, "0");
+              rowDateStr = `${d.getFullYear()}-${mm}-${dd}`;
+            }
+          } else if (dateType === "timestamp" && r["Timestamp"]) {
+            const parts = r["Timestamp"].split(",")[0].split("/"); // Parses "14/5/2026"
+            if (parts.length === 3) {
+              rowDateStr = `${parts[2]}-${parts[1].padStart(2, "0")}-${parts[0].padStart(2, "0")}`;
+            }
+          }
+
+          let matchDate = true;
+          if (startDate && rowDateStr)
+            matchDate = matchDate && rowDateStr >= startDate;
+          if (endDate && rowDateStr)
+            matchDate = matchDate && rowDateStr <= endDate;
+          if ((startDate || endDate) && !rowDateStr) matchDate = false;
+
+          const searchStr = (
+            (r["ID"] || "") +
+            " " +
+            (r["Nama Kegiatan"] || "") +
+            " " +
+            (r["Bidang"] || "") +
+            " " +
+            (r["Submitter Name"] || "")
+          ).toLowerCase();
+
+          const matchSearch = searchStr.indexOf(q) > -1;
+
+          return matchStatus && matchSearch && matchDate;
+        });
+
+        const tbody = buildTable(
+          filtered,
+          App.currentUser.role === "supervisor",
+        );
+        document.getElementById("list-table-container").innerHTML = tbody;
+        document.getElementById("list-count").innerText =
+          filtered.length + " pengajuan ditemukan";
       }
 
       function buildTable(rows, showActions) {
@@ -1799,6 +1904,18 @@
       function showDetail(rowIndex) {
         const r = App.allLPJ.find((x) => x._rowIndex === rowIndex);
         if (!r) return;
+        let cleanTanggal = r["Tanggal Pelaksanaan"];
+        if (cleanTanggal && cleanTanggal.includes("T")) {
+          const d = new Date(cleanTanggal);
+          if (!isNaN(d.getTime())) {
+            cleanTanggal = d.toLocaleDateString("id-ID", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            });
+          }
+        }
+
         const files =
           (r._files || [])
             .map(
@@ -1820,7 +1937,7 @@
             </span>
             </div>
             <div style="padding:24px;">
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">${dr("Nama Kegiatan", r["Nama Kegiatan"])}${dr("Tanggal Pelaksanaan", r["Tanggal Pelaksanaan"])}${dr("Bidang", r["Bidang"])}${dr("Mata Anggaran", r["Mata Anggaran"])}${dr("Nomor Sprint", r["Nomor Sprint"])}${dr("Jumlah", r["Jumlah"])}${dr("Nama Pelaksana", r["Nama Pelaksana"])}${dr("Tipe Verifikasi", r["Tipe Verifikasi"])}${dr("Pengaju", (r["Submitter Name"] || "") + '<br/><span style="color:var(--text-muted);font-size:12px;">' + (r["Submitter Email"] || "") + "</span>")}${dr("Tanggal Upload", r.Timestamp)}</div>${r["Catatan PPK"] ? `<div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:10px;padding:14px 16px;margin-bottom:16px;"><div style="font-size:11px;font-weight:700;color:#92400e;margin-bottom:5px;">CATATAN PPK</div><div style="font-size:13px;color:#78350f;">${r["Catatan PPK"]}</div></div>` : ""}<div style="font-size:12px;font-weight:700;color:var(--navy-700);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;"><i class="bi bi-paperclip me-1"></i> Dokumen Terlampir</div><div>${files}</div></div>`;
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">${dr("Nama Kegiatan", r["Nama Kegiatan"])}${dr("Tanggal Pelaksanaan", cleanTanggal)}${dr("Bidang", r["Bidang"])}${dr("Mata Anggaran", r["Mata Anggaran"])}${dr("Nomor Sprint", r["Nomor Sprint"])}${dr("Jumlah", r["Jumlah"])}${dr("Nama Pelaksana", r["Nama Pelaksana"])}${dr("Tipe Verifikasi", r["Tipe Verifikasi"])}${dr("Pengaju", (r["Submitter Name"] || "") + '<br/><span style="color:var(--text-muted);font-size:12px;">' + (r["Submitter Email"] || "") + "</span>")}${dr("Tanggal Upload", r.Timestamp)}</div>${r["Catatan PPK"] ? `<div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:10px;padding:14px 16px;margin-bottom:16px;"><div style="font-size:11px;font-weight:700;color:#92400e;margin-bottom:5px;">CATATAN PPK</div><div style="font-size:13px;color:#78350f;">${r["Catatan PPK"]}</div></div>` : ""}<div style="font-size:12px;font-weight:700;color:var(--navy-700);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;"><i class="bi bi-paperclip me-1"></i> Dokumen Terlampir</div><div>${files}</div></div>`;
         document.getElementById("modal-detail").classList.add("open");
       }
 
